@@ -17,7 +17,21 @@
 #pragma mark - Public
 + (void)hookRevoke {
     
-    if ([PluginUtils isVersionNewerThan:@"2.3.29"]) {
+    Class cls = NSClassFromString(@"MessageService");
+       NSString *selName = @"onRevokeMsg:";
+       if ([PluginUtils isVersionNewerThan:@"3.0.3"])
+    {
+           cls = NSClassFromString(@"FFProcessReqsvrZZ");
+           selName = @"FFToNameFavChatZZ:sessionMsgList:";
+        
+        hookMethod(objc_getClass("FFProcessReqsvrZZ"),
+                   @selector(FFToNameFavChatZZ:sessionMsgList:),
+                   [self class],
+                   @selector(_hook_FFToNameFavChatZZ:sessionMsgList:)
+                   );
+    }
+    
+    else if ([PluginUtils isVersionNewerThan:@"2.3.29"]) {
         hookMethod(objc_getClass("MessageService"),
                    @selector(FFToNameFavChatZZ:sessionMsgList:),
                    [self class],
@@ -132,6 +146,16 @@
         return [msgData.groupChatSenderDisplayName copy];
     }
     return @"";
+}
+
+@end
+
+@interface ZZZ:NSObject
+@end
+
+@implementation ZZZ
++ (void)load{
+    NSLog(@"-----------zzzzzzzzzzzzzzzzzzz");
 }
 
 @end
